@@ -15,6 +15,7 @@ void main( void )
    if(Flags.systick)            
     {
       Flags.systick    = 0;
+      Rclock++;
       date_time();
     }
  /*
@@ -36,13 +37,12 @@ void main( void )
 //P1OUT &= ~(BIT0+BIT1+BIT2);
 
       
- /*     ReceiveOff();
+      ReceiveOff();
      
       receiving = 0; 
-//      *((pInt16U)&TxBuffer[0])=Rclock;
+      *((pInt8U)&TxBuffer[0])=Rclock;
       Transmit( (unsigned char*)TxBuffer, sizeof TxBuffer);         
       transmitting = 1;
-  */ 
       Flags.radio = 0;                        // Re-enable button press  
     }
   else if(!transmitting)

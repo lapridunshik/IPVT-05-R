@@ -13,7 +13,7 @@ __interrupt void ta1_isr(void)
   if(rtc >= 1024)
   {
     rtc -= 1024;
-    Rclock++;
+    
     clock_ctr++;
     Flags.systick=    1;
     if(clock_ctr==5) 
@@ -61,7 +61,8 @@ __interrupt void CC1101_ISR(void)
         {
      //  P1OUT= 0x02;                       // Toggle LED1 
        P1OUT &= ~(BIT0+BIT1+BIT2);   
- if(!Flags.count)
+ /*
+       if(!Flags.count)
     {
      *((pInt8U)&Rclock_main)=RxBuffer[0];
      *((pInt8U)&Rclock_main+1)=RxBuffer[1];
@@ -74,7 +75,7 @@ __interrupt void CC1101_ISR(void)
      *((pInt8U)&Rclock_main+1)=RxBuffer[1];
      clock_err[j++]=Rclock-Rclock_main;
     // Rclock=Rclock_main;    
-     
+   */  
         }
 
       }
