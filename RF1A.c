@@ -196,8 +196,8 @@ void WriteRfSettings(RF_SETTINGS *pRfSettings) {
     WriteSingleReg(TEST1,    pRfSettings->test1);
     WriteSingleReg(TEST0,    pRfSettings->test0);
     WriteSingleReg(FIFOTHR,  pRfSettings->fifothr);
-    WriteSingleReg(IOCFG2,   pRfSettings->iocfg2);
-    WriteSingleReg(IOCFG0,   pRfSettings->iocfg0);
+ //   WriteSingleReg(IOCFG2,   pRfSettings->iocfg2);
+ //   WriteSingleReg(IOCFG0,   pRfSettings->iocfg0);
     WriteSingleReg(PKTCTRL1, pRfSettings->pktctrl1);
     WriteSingleReg(PKTCTRL0, pRfSettings->pktctrl0);
     WriteSingleReg(ADDR,     pRfSettings->addr);
