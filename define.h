@@ -20,7 +20,7 @@
 #define RXI_DISABLE             UCA0IE&=  ~UCRXIE
 #define TXI_DISABLE             UCA0IE&=  ~UCTXIE
 #define TX_START                { UCA0STAT=  UCLISTEN; UCA0IFG|= UCTXIFG; UCA0IE|= UCTXIE; }
-#define WDRCLR                  WDTCTL=  WDTPW + WDTSSEL__VLO + WDTCNTCL + WDTIS__8192
+#define WDRCLR                  WDTCTL=  WDTPW + WDTSSEL__VLO + WDTTMSEL + WDTCNTCL + WDTIS__8192
 
 #define MAX_DATA_LEN          128
 #define UART_BUF_LEN          272 

@@ -8,7 +8,7 @@ volatile Flags_t          Flags;
 // глобальные в сегменте RAM - начальный внешний адрес = 0х0000
 //#pragma dataseg= RAM
 
-__root __no_init U8       Seconds, Minutes, Houres, Days, Monthes, Years, Rclock, Rclock_main, transmitting, receiving;
+__root __no_init U8       Seconds, Minutes, Houres, Days, Monthes, Years, transmitting, receiving;
 __root __no_init U8       RxBuffer[PACKET_LEN+2], RxBufferLength;
 __root  unsigned char TxBuffer[PACKET_LEN]= {0xCC, 0x66, 0xCC, 0x66, 0xCC};
 //#pragma dataseg= default
@@ -22,7 +22,7 @@ __root const Int16U       NetAdr=        1;
 Int16U                  RxCounter;
 Int16U                  TxPointer;
 Int8U                   UartBuffer[272];
-//Int16U                  Rclock=0,Rclock_main=0;
+Int8U                   Rclock, Rclock_main;
 Int16S                  clock_err[256];
 
 
@@ -64,7 +64,7 @@ RF_SETTINGS rfSettings = {
     0x10,   // FREQ2     Frequency control word, high byte.
     0xA7,   // FREQ1     Frequency control word, middle byte.
     0x62,   // FREQ0     Frequency control word, low byte.
-    0xCA,   // MDMCFG4   Modem configuration.
+    0xC5,   // MDMCFG4   Modem configuration.
     0x83,   // MDMCFG3   Modem configuration.
     0x93,   // MDMCFG2   Modem configuration.
     0x22,   // MDMCFG1   Modem configuration.

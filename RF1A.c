@@ -10,7 +10,6 @@
 unsigned char Strobe(unsigned char strobe)
 {
   unsigned char statusByte = 0;
-  unsigned int  gdo_state;
   
   // Check for valid strobe command 
   if((strobe == 0xBD) || ((strobe >= RF_SRES) && (strobe <= RF_SNOP)))
@@ -24,8 +23,8 @@ unsigned char Strobe(unsigned char strobe)
     // Write the strobe instruction
     if ((strobe > RF_SRES) && (strobe < RF_SNOP))
     {
-      gdo_state = ReadSingleReg(IOCFG2);    // buffer IOCFG2 state
-      WriteSingleReg(IOCFG2, 0x29);         // chip-ready to GDO2
+   //   gdo_state = ReadSingleReg(IOCFG2);    // buffer IOCFG2 state
+   //   WriteSingleReg(IOCFG2, 0x29);         // chip-ready to GDO2
       
       RF1AINSTRB = strobe; 
       if ( (RF1AIN&0x04)== 0x04 )           // chip at sleep mode
@@ -38,7 +37,7 @@ unsigned char Strobe(unsigned char strobe)
           __delay_cycles(850);	            
         }
       }
-      WriteSingleReg(IOCFG2, gdo_state);    // restore IOCFG2 setting
+    //  WriteSingleReg(IOCFG2, gdo_state);    // restore IOCFG2 setting
     
       while( !(RF1AIFCTL1 & RFSTATIFG) );
     }
@@ -68,8 +67,13 @@ unsigned char ReadSingleReg(unsigned char addr)
   else
     // Send address + Instruction + 1 dummy byte (auto-read)
     RF1AINSTR1B = (addr | RF_STATREGRD);    
-  
-  while (!(RF1AIFCTL1 & RFDOUTIFG) );
+  S16 cnt=0;
+  while (!(RF1AIFCTL1 & RFDOUTIFG) )
+  {
+     cnt++;
+     if(cnt>10) break;
+  }
+    
   data_out = RF1ADOUTB;                    // Read data and clears the RFDOUTIFG
 
   return data_out;

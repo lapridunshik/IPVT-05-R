@@ -15,11 +15,12 @@ void  ini(void)
 {
   __disable_interrupt(); 
   
-  SFRIE1= SFRIFG1= SYSCTL= 0;         // всяку дребедень выкл
+  SFRIE1= WDTIE;
+  SFRIFG1= SYSCTL= 0;         // всяку дребедень выкл
   SFRRPCR=  BIT2 + BIT3;              // ресетный резистор вкл
   
     // WDT
-  WDTCTL=   WDTPW + WDTSSEL__VLO + WDTCNTCL + WDTIS__32K;    // ~ 2.4c
+  WDTCTL=   WDTPW + WDTSSEL__VLO + WDTTMSEL + WDTCNTCL + WDTIS__32K;    // ~ 2.4c
   
     // PMM
   PMMCTL0=  PMMPW;                    // Vcore = 1,4 В
@@ -61,7 +62,7 @@ void  ini(void)
   
   P5SEL=  0;    
   P5OUT=  P5DS= P5REN= 0; 
-  P5DIR=  0xff;
+  P5DIR=  0x00;
   
   PJOUT= 0;
   PJDS= PJREN= 0;
@@ -73,15 +74,19 @@ void  ini(void)
   UCSCTL1=  DCORSEL_1;                                        // 0.5...3.5 MHz
   UCSCTL2=  31;                                               // 32,768*(31+1) ~ 1MHz на выходе FLL
   UCSCTL3=  FLLREFDIV_0 + SELREF__REFOCLK;                    // 32kHz на вход FLL
-
+  UCSCTL4=    SELM__DCOCLKDIV + SELS__DCOCLKDIV + SELA__REFOCLK; 
   UCSCTL5=  DIVA__32;                                         // ACLK = XT1/32 = 1024 Hz
+  UCSCTL6=  XT1OFF;
   UCSCTL8=  0;                                                // запретить тактирование по требованию
 
    // ждем генератор DCO
-  while(UCSCTL7 & DCOFFG) UCSCTL7 &= ~DCOFFG; 
+  while(UCSCTL7 & DCOFFG) UCSCTL7 &= ~DCOFFG;
+  
+  while(UCSCTL7 & XT1LFOFFG)  UCSCTL7 &= ~XT1LFOFFG; 
+  while(UCSCTL7 & XT2OFFG)  UCSCTL7 &= ~XT2OFFG;
   SFRIFG1 &= ~OFIFG; 
   
-  UCSCTL4=    SELM__DCOCLKDIV + SELS__DCOCLKDIV + SELA__REFOCLK;    // MCLK - FLL(1MHz), SMCLK - FLL(1MHz), ACLK - XT1/32(1024Hz)
+     // MCLK - FLL(1MHz), SMCLK - FLL(1MHz), ACLK - XT1/32(1024Hz)
   
   // TA0
   TA0CTL=     TASSEL_1 + MC__UP + TACLR; //ACLK
@@ -111,7 +116,7 @@ void  ini(void)
  // InitButtonLeds();
   ReceiveOff();
   ReceiveOn(); 
-  receiving = 1; 
+  receiving = 0; 
   transmitting = 0;
   P1OUT= 0x02;
 
@@ -120,7 +125,7 @@ void  ini(void)
 
   if((Seconds > 59) || (Minutes > 59) || (Houres > 23)  || (Days > 31) || (Monthes > 12) || (Years < 12) || (Years > 99) )
   {
-    Seconds= Minutes= Houres= Rclock= 0;
+    Seconds= Minutes= Houres= Rclock= Rclock_main= 0;
     Days= Monthes= 4;
     Years = 12;
   }

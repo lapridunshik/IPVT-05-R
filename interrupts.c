@@ -1,5 +1,37 @@
 #include  "define.h"
 
+#pragma vector=WDT_VECTOR
+__interrupt void wdt_isr(void)
+
+{
+  P1OUT= 0x02;
+  //SFRIFG1 &= ~WDTIFG;
+}
+
+#pragma vector=UNMI_VECTOR
+__interrupt void ofifg_isr(void)
+
+{
+ // SFRIFG1 &= ~OFIFG;
+  if(UCSCTL7&XT1LFOFFG)
+  {
+   P1OUT= 0x02; 
+   }
+  if(UCSCTL7&XT1HFOFFG)
+  {
+    P1OUT= 0x02;
+  }
+  if(UCSCTL7&XT2OFFG)
+  {
+    P1OUT= 0x02;
+  }
+  if(UCSCTL7&DCOFFG)
+  {
+    P1OUT= 0x02;
+  }
+}
+
+
 #pragma vector=TIMER1_A1_VECTOR
 __interrupt void ta1_isr(void)
 {          
@@ -16,12 +48,11 @@ __interrupt void ta1_isr(void)
     
     clock_ctr++;
     Flags.systick=    1;
-    if(clock_ctr==5) 
+    if(clock_ctr==3) 
     {
       Flags.radio_receive=      1;
       clock_ctr=0;
     }
-   // Flags.radio_receive=      1;
     Flags.radio=      1;
     __low_power_mode_off_on_exit();                  // для сброса WDT и подсчета времени
   }
@@ -59,8 +90,8 @@ __interrupt void CC1101_ISR(void)
         // Check the CRC results
         if(RxBuffer[CRC_LQI_IDX] & CRC_OK)  
         {
-     //  P1OUT= 0x02;                       // Toggle LED1 
-       P1OUT &= ~(BIT0+BIT1+BIT2);   
+       P1OUT= 0x02;                       // Toggle LED1 
+  //     P1OUT &= ~(BIT0+BIT1+BIT2);   
  /*
        if(!Flags.count)
     {
@@ -82,7 +113,8 @@ __interrupt void CC1101_ISR(void)
       else if(transmitting)		    // TX end of packet
       {
         RF1AIE &= ~BIT9;                    // Disable TX end-of-packet interrupt
-        P1OUT &= ~(BIT0+BIT1+BIT2);                     // Turn off LED after Transmit               
+        //P1OUT &= ~(BIT0+BIT1+BIT2);                     // Turn off LED after Transmit               
+        P1OUT= 0x02;  
         transmitting = 0; 
       }
       else while(1); 			    // trap 
